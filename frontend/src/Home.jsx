@@ -2,10 +2,13 @@
 // numbers=[1,2,3,4,5]
 
 import NavBar from "./NavBar";
+import { useAuth } from "./AuthContext";
 
 // numbers.map((num)=>(html))
 
 function Home() {
+
+    const {user}= useAuth();
 
     const posts = [{
         id: 1,
@@ -66,7 +69,7 @@ function Home() {
     return (
         <div className="min-h-screen flex flex-col items-center bg-gray-50">
             <NavBar/>
-            <p className="text-4xl pt-5 font-bold">Welcome back, Dev Astra</p>
+            <p className="text-4xl pt-5 font-bold">Welcome back,{user ? user.fullname:'Dev Astra'}</p>
             <p className="text-lg text-gray-500 mt-4"> Discover amazing stories, insights, and ideas from our community of writers.</p>
             <div className=" flex gap-10 justify-around mt-5 ">
                 <button className="px-10 py-4 cursor-pointer bg-blue-700 hover:bg-blue-900 shadow-md text-white rounded-md">Write a New Post</button>
