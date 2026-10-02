@@ -6,7 +6,12 @@ import Home from "./Home.jsx"
 import {Routes, Route} from "react-router-dom"
 import ProtectedRoute from "./ProtectedRoutes.jsx"
 import Profile from "./Profile.jsx"
+import WritePost from "./WritePost.jsx"
+import MyPosts from "./MyPosts.jsx"
+import PostDetails from "./PostDetails.jsx"
 import {AuthProvider} from "./AuthContext.jsx"
+
+
 // w-1/3
 // sm	40rem (640px)	
 // md	48rem (768px)	
@@ -16,19 +21,16 @@ import {AuthProvider} from "./AuthContext.jsx"
 
 const App = () => {
   return (
-    // <div className="">
-    //   <NavBar/>
-    //   {/* <Login/> */}
-    //   <Home/>
-    //   {/* <SignUp /> */}
-    //  {/* <ProductCard/> */}
-    // </div>
+  
     <AuthProvider>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/posts/new" element={<ProtectedRoute><WritePost /></ProtectedRoute>} />
+        <Route path="/my-posts" element={<ProtectedRoute><MyPosts /></ProtectedRoute>} />
+        <Route path="/posts/:id" element={<PostDetails />} />
         {/* Login required to see /profile */}
         <Route path="/profile" element={
           <ProtectedRoute>
