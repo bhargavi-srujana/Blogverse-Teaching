@@ -3,6 +3,7 @@
 
 import NavBar from "./NavBar";
 import { useAuth } from "./AuthContext";
+import { Link } from "react-router-dom";
 
 // numbers.map((num)=>(html))
 
@@ -69,11 +70,11 @@ function Home() {
     return (
         <div className="min-h-screen flex flex-col items-center bg-gray-50">
             <NavBar/>
-            <p className="text-4xl pt-5 font-bold">Welcome back,{user ? user.fullname:'Dev Astra'}</p>
+            <p className="text-4xl pt-5 font-bold">Welcome back,{user ? user.fullName:'Dev Astra'}</p>
             <p className="text-lg text-gray-500 mt-4"> Discover amazing stories, insights, and ideas from our community of writers.</p>
             <div className=" flex gap-10 justify-around mt-5 ">
-                <button className="px-10 py-4 cursor-pointer bg-blue-700 hover:bg-blue-900 shadow-md text-white rounded-md">Write a New Post</button>
-                <button className="px-10 py-4 cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md" >View My Posts</button>
+                <Link to="/posts/new" className="px-10 py-4 cursor-pointer bg-blue-700 hover:bg-blue-900 shadow-md text-white rounded-md">Write a New Post</Link>
+                <Link to="/my-posts" className="px-10 py-4 cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md">View My Posts</Link>
             </div>
             <div className="mt-5 flex gap-10 flex-wrap justify-center w-full rounded-lg shadow-lg pb-5">
                 {
@@ -97,7 +98,7 @@ function Home() {
                                 </p>
                             </div>
                             <div className="mt-3 mb-3  px-3 flex justify-end">
-                                <button className="text-blue-500 hover:underline cursor-pointer">Read more</button>
+                                <Link to={`/posts/${post.id}`} state={{ post }} className="text-blue-500 hover:underline cursor-pointer">Read more</Link>
                             </div>
                         </div>))
                 }
