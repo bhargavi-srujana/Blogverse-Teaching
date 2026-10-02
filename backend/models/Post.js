@@ -18,9 +18,25 @@ const postSchema = new mongoose.Schema(
             required: true
         },
 
+        authorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+
         category: {
             type: String,
             required: true
+        },
+
+        readTime: {
+            type: Number,
+            required: true,
+            min: 1
+        },
+
+        image: {
+            type: String,
+            default: ""
         },
 
         tags: {

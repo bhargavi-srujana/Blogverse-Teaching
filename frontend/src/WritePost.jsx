@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
-import { useAuth } from "./AuthContext";
 import { api } from "./api";
 
 export default function WritePost() {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ title: "", category: "", content: "", readTime: "", image: "" });
   const [error, setError] = useState("");
@@ -14,23 +12,10 @@ export default function WritePost() {
     event.preventDefault();
     const { ok, data } = await api("/api/posts", {
       method: "POST",
-      body: JSON.stringify({ ...form, author: user.fullName }),
+      body: JSON.stringify(form),
     });
     if (!ok) return setError(data?.message || "Could not create post");
     navigate("/my-posts");
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      setError("Choose an image smaller than 2 MB.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => setForm({ ...form, image: reader.result });
-    reader.readAsDataURL(file);
-    setError("");
   };
 
   return <div className="min-h-screen bg-gray-50"><NavBar /><main className="mx-auto mt-10 max-w-2xl px-4 pb-10">
@@ -49,7 +34,8 @@ export default function WritePost() {
         <input required min="1" type="number" placeholder="5" value={form.readTime} onChange={e => setForm({ ...form, readTime: e.target.value })} className="rounded-lg border border-gray-300 p-3 font-normal outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
       </label>
       <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">Post image
-        <input type="file" accept="image/*" onChange={handleImageChange} className="rounded-lg border border-gray-300 p-3 font-normal" />
+        <input type="url" placeholder="https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp" value={form.image} onChange={e => setForm({ ...form, image: e.target.value })} className="rounded-lg border border-gray-300 p-3 font-normal outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
+        <span className="font-normal text-gray-500">Paste a direct image URL, not a Google Images results page.</span>
       </label>
       {form.image && <img src={form.image} alt="Post preview" className="h-52 w-full rounded-lg object-cover" />}
       <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">Your post

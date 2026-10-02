@@ -1,13 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Post = require("../models/Post");
 
 const JWT_SECRET = process.env.JWT_SECRET || "teaching-secret";
-
-
-// =========================
-// SIGNUP
-// =========================
 
 const signup = async (req, res) => {
 
@@ -56,10 +52,6 @@ const signup = async (req, res) => {
 };
 
 
-// =========================
-// LOGIN
-// =========================
-
 const login = async (req, res) => {
 
     const { email, password } = req.body;
@@ -104,10 +96,6 @@ const login = async (req, res) => {
 };
 
 
-// =========================
-// LOGOUT
-// =========================
-
 const logout = (req, res) => {
 
     res.clearCookie("token");
@@ -117,10 +105,6 @@ const logout = (req, res) => {
     });
 };
 
-
-// =========================
-// GET CURRENT USER
-// =========================
 
 const getMe = async (req, res) => {
 
@@ -132,10 +116,36 @@ const getMe = async (req, res) => {
     });
 };
 
+const savePost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.postId);
+        if (!post) return res.status(404).json({ message: "Post not found" });
 
-// =========================
-// GET ALL USERS
-// =========================
+        const user = await User.findById(req.user.userId);
+        const postUrl = `/posts/${post._id}`;
+        if (!user.savedPosts.includes(postUrl)) user.savedPosts.push(postUrl);
+        await user.save();
+
+        res.json({ savedPosts: user.savedPosts });
+    } catch (error) {
+        res.status(400).json({ message: "Could not save post" });
+    }
+};
+
+const unsavePost = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId);
+        const postUrl = `/posts/${req.params.postId}`;
+        user.savedPosts = user.savedPosts.filter(url => url !== postUrl);
+        await user.save();
+
+        res.json({ savedPosts: user.savedPosts });
+    } catch (error) {
+        res.status(400).json({ message: "Could not remove saved post" });
+    }
+};
+
+
 
 const getUsers = async (req, res) => {
 
@@ -146,9 +156,7 @@ const getUsers = async (req, res) => {
 };
 
 
-// =========================
-// UPDATE USER
-// =========================
+
 
 const updateUser = async (req, res) => {
 
@@ -193,6 +201,8 @@ module.exports = {
     login,
     logout,
     getMe,
+    savePost,
+    unsavePost,
     getUsers,
     updateUser
 };

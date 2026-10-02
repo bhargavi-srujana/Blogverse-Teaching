@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema(
         posts: {
             type: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }],
             default: []
+        },
+        savedPosts: {
+            type: [String],
+            default: []
         }
     },
     {

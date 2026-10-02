@@ -1,8 +1,22 @@
-const Post = require("../models/post");
+const Post = require("../models/Post");
+const User = require("../models/User");
 
 const createPost = async (req, res) => {
     try {
-        const post = await Post.create(req.body);
+        const user = await User.findById(req.user.userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const post = await Post.create({
+            title: req.body.title,
+            content: req.body.content,
+            category: req.body.category,
+            readTime: req.body.readTime,
+            image: req.body.image || "",
+            author: user.fullName,
+            authorId: user._id
+        });
+        user.posts.push(post._id);
+        await user.save();
 
         res.status(201).json({
             message: "Post created successfully",
@@ -50,9 +64,10 @@ const getPostById = async (req, res) => {
 
 const updatePost = async (req, res) => {
     try {
+        const { title, content, category, readTime, image } = req.body;
         const post = await Post.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            { title, content, category, readTime, image },
             {
                 new: true,
                 runValidators: true
