@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
-import { api } from "./api";
+import { createPost } from "./core/post";
 
 export default function WritePost() {
   const navigate = useNavigate();
@@ -10,11 +10,8 @@ export default function WritePost() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const { ok, data } = await api("/api/posts", {
-      method: "POST",
-      body: JSON.stringify(form),
-    });
-    if (!ok) return setError(data?.message || "Could not create post");
+    const data = await createPost(form);
+    if (!data?.post) return setError(data?.message || "Could not create post");
     navigate("/my-posts");
   };
 

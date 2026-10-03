@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import { useAuth } from "./AuthContext";
-import { api } from "./api";
+import { getPosts } from "./core/post";
 import { Link } from "react-router-dom";
 
 export default function MyPosts() {
@@ -10,10 +10,10 @@ export default function MyPosts() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api("/api/posts").then(({ ok, data }) => {
-      if (!ok) setError(data?.message || "Could not load posts");
+    getPosts().then((data) => {
+      if (!Array.isArray(data)) setError("Could not load posts");
       else setPosts(data.filter(post => post.author === user.fullName));
-    }).catch(() => setError("Could not connect to backend"));
+    });
   }, [user.fullName]);
 
   return <div className="min-h-screen bg-gray-50"><NavBar /><main className="mx-auto mt-10 max-w-4xl px-4 pb-10">
